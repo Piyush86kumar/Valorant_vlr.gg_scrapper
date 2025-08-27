@@ -417,8 +417,7 @@ def display_simple_data_preview():
                                 'Team': player.get('team_name', team_name),
                                 'Player': player.get('player_name', 'Unknown'),
                                 'Player ID': player.get('player_id', 'N/A'),
-                                'Primary Agent': player.get('agent', 'N/A'),
-                                'All Agents': ', '.join(player.get('agents', [])),
+                                'Agent': ', '.join(player.get('agents', [])) if player.get('agents') else player.get('agent', 'N/A'),
                             }
 
                             # Add all sides stats (All filter)
@@ -630,51 +629,29 @@ def display_simple_data_preview():
                     map_name = map_data.get('map_name', 'N/A')
                     performance_stats = map_data.get('performance_stats', {})
 
-                    for player_stats in performance_stats.get('team1_players', []):
-                        flat_player = {
-                            'Match ID': match_id,
-                            'Map': map_name,
-                            'Player': player_stats.get('player_name', 'N/A'),
-                            'Team': player_stats.get('team_name', match_info.get('team1', 'Team 1')),
-                            'Agent': player_stats.get('agent', 'N/A'),
-                            '2K': player_stats.get('multikills', {}).get('2k', 0),
-                            '3K': player_stats.get('multikills', {}).get('3k', 0),
-                            '4K': player_stats.get('multikills', {}).get('4k', 0),
-                            '5K': player_stats.get('multikills', {}).get('5k', 0),
-                            '1v1': player_stats.get('clutches', {}).get('1v1', 0),
-                            '1v2': player_stats.get('clutches', {}).get('1v2', 0),
-                            '1v3': player_stats.get('clutches', {}).get('1v3', 0),
-                            '1v4': player_stats.get('clutches', {}).get('1v4', 0),
-                            '1v5': player_stats.get('clutches', {}).get('1v5', 0),
-                            'ECON': player_stats.get('other_stats', {}).get('econ', 0),
-                            'PL': player_stats.get('other_stats', {}).get('pl', 0),
-                            'DE': player_stats.get('other_stats', {}).get('de', 0),
-                        }
-                        flat_performance_data.append(flat_player)
-                        total_players += 1
-
-                    for player_stats in performance_stats.get('team2_players', []):
-                        flat_player = {
-                            'Match ID': match_id,
-                            'Map': map_name,
-                            'Player': player_stats.get('player_name', 'N/A'),
-                            'Team': match_info.get('team2', 'Team 2'),
-                            'Agent': player_stats.get('agent', 'N/A'),
-                            '2K': player_stats.get('multikills', {}).get('2k', 0),
-                            '3K': player_stats.get('multikills', {}).get('3k', 0),
-                            '4K': player_stats.get('multikills', {}).get('4k', 0),
-                            '5K': player_stats.get('multikills', {}).get('5k', 0),
-                            '1v1': player_stats.get('clutches', {}).get('1v1', 0),
-                            '1v2': player_stats.get('clutches', {}).get('1v2', 0),
-                            '1v3': player_stats.get('clutches', {}).get('1v3', 0),
-                            '1v4': player_stats.get('clutches', {}).get('1v4', 0),
-                            '1v5': player_stats.get('clutches', {}).get('1v5', 0),
-                            'ECON': player_stats.get('other_stats', {}).get('econ', 0),
-                            'PL': player_stats.get('other_stats', {}).get('pl', 0),
-                            'DE': player_stats.get('other_stats', {}).get('de', 0),
-                        }
-                        flat_performance_data.append(flat_player)
-                        total_players += 1
+                    for player_type in ['team1_players', 'team2_players']:
+                        for player_stats in performance_stats.get(player_type, []):
+                            flat_player = {
+                                'Match ID': match_id,
+                                'Map': map_name,
+                                'Player': player_stats.get('player_name', 'N/A'),
+                                'Team': player_stats.get('team_name', match_info.get('team1', 'Team 1') if player_type == 'team1_players' else match_info.get('team2', 'Team 2')),
+                                'Agent': player_stats.get('agent', 'N/A'),
+                                '2K': player_stats.get('multikills', {}).get('2k', 0),
+                                '3K': player_stats.get('multikills', {}).get('3k', 0),
+                                '4K': player_stats.get('multikills', {}).get('4k', 0),
+                                '5K': player_stats.get('multikills', {}).get('5k', 0),
+                                '1v1': player_stats.get('clutches', {}).get('1v1', 0),
+                                '1v2': player_stats.get('clutches', {}).get('1v2', 0),
+                                '1v3': player_stats.get('clutches', {}).get('1v3', 0),
+                                '1v4': player_stats.get('clutches', {}).get('1v4', 0),
+                                '1v5': player_stats.get('clutches', {}).get('1v5', 0),
+                                'ECON': player_stats.get('other_stats', {}).get('econ', 0),
+                                'PL': player_stats.get('other_stats', {}).get('pl', 0),
+                                'DE': player_stats.get('other_stats', {}).get('de', 0),
+                            }
+                            flat_performance_data.append(flat_player)
+                            total_players += 1
 
             if flat_performance_data:
                 # Create DataFrame and clean data
@@ -857,8 +834,10 @@ def display_save_options():
                             p_info = base_info.copy()
                             p_info.update({
                                 'player_name': player.get('player_name'),
+                                'player_id': player.get('player_id', 'N/A'),
                                 'player_team': team_name,
-                                'stat_type': 'overall'
+                                'stat_type': 'overall',
+                                'agent': ', '.join(player.get('agents', [])) if player.get('agents') else player.get('agent', 'N/A')
                             })
                             p_info.update(player.get('stats_all_sides', {}))
                             flat_detailed.append(p_info)
@@ -875,8 +854,10 @@ def display_save_options():
                                 p_info = map_info.copy()
                                 p_info.update({
                                     'player_name': player.get('player_name'),
+                                    'player_id': player.get('player_id', 'N/A'),
                                     'player_team': team_name,
-                                    'stat_type': 'map'
+                                    'stat_type': 'map',
+                                    'agent': player.get('agent', 'N/A')
                                 })
                                 p_info.update(player.get('stats_all_sides', {}))
                                 flat_detailed.append(p_info)
@@ -923,11 +904,11 @@ def display_save_options():
                             for player_type in ['team1_players', 'team2_players']:
                                 for player_stats in performance_stats.get(player_type, []):
                                     flat_player = {
-                                        'match_id': match_id,
-                                        'map_name': map_name,
-                                        'player_name': player_stats.get('player_name', 'N/A'),
-                                        'team': player_stats.get('team_name', match_info.get('team1', 'Team 1') if player_type == 'team1_players' else match_info.get('team2', 'Team 2')),
-                                        'agent': player_stats.get('agent', 'N/A'),
+                                        'Match ID': match_id,
+                                        'Map': map_name,
+                                        'Player': player_stats.get('player_name', 'N/A'),
+                                        'Team': player_stats.get('team_name', match_info.get('team1', 'Team 1') if player_type == 'team1_players' else match_info.get('team2', 'Team 2')),
+                                        'Agent': player_stats.get('agent', 'N/A'),
                                         '2K': player_stats.get('multikills', {}).get('2k', 0),
                                         '3K': player_stats.get('multikills', {}).get('3k', 0),
                                         '4K': player_stats.get('multikills', {}).get('4k', 0),
@@ -984,6 +965,7 @@ def display_save_options():
         if 'detailed_matches' in enhanced_data and enhanced_data['detailed_matches']:
             match_overview_data = []
             map_details_data = []
+            detailed_player_stats = []
             
             for match in enhanced_data['detailed_matches']:
                 teams = match.get('teams', {})
@@ -1021,10 +1003,56 @@ def display_save_options():
                         'picked_by': map_data.get('picked_by', 'N/A')
                     }
                     map_details_data.append(map_detail)
+                
+                # Detailed player stats (same structure as CSV)
+                base_info = {
+                    'match_id': match.get('match_id'),
+                    'event_name': match.get('event_info', {}).get('name'),
+                    'event_stage': match.get('event_info', {}).get('stage'),
+                    'match_date': match.get('event_info', {}).get('date_utc'),
+                    'team1': match.get('teams', {}).get('team1', {}).get('name'),
+                    'team2': match.get('teams', {}).get('team2', {}).get('name'),
+                    'score_overall': f"{match.get('teams', {}).get('team1', {}).get('score_overall', 0)} - {match.get('teams', {}).get('team2', {}).get('score_overall', 0)}"
+                }
+                
+                # Overall player stats
+                for team_name, players in match.get('overall_player_stats', {}).items():
+                    for player in players:
+                        p_info = base_info.copy()
+                        p_info.update({
+                            'player_name': player.get('player_name'),
+                            'player_id': player.get('player_id', 'N/A'),
+                            'player_team': team_name,
+                            'stat_type': 'overall',
+                            'agent': ', '.join(player.get('agents', [])) if player.get('agents') else player.get('agent', 'N/A')
+                        })
+                        p_info.update(player.get('stats_all_sides', {}))
+                        detailed_player_stats.append(p_info)
+                
+                # Map-by-map player stats
+                for map_data in match.get('maps', []):
+                    map_info = base_info.copy()
+                    map_info.update({
+                        'map_name': map_data.get('map_name'),
+                        'map_winner': map_data.get('winner_team_name')
+                    })
+                    for team_name, players in map_data.get('player_stats', {}).items():
+                        for player in players:
+                            p_info = map_info.copy()
+                            p_info.update({
+                                'player_name': player.get('player_name'),
+                                'player_id': player.get('player_id', 'N/A'),
+                                'player_team': team_name,
+                                'stat_type': 'map',
+                                'agent': player.get('agent', 'N/A')
+                            })
+                            p_info.update(player.get('stats_all_sides', {}))
+                            detailed_player_stats.append(p_info)
             
             # Add structured overview data to JSON
             enhanced_data['detailed_matches_overview'] = match_overview_data
             enhanced_data['detailed_matches_maps'] = map_details_data
+            enhanced_data['detailed_matches_player_stats'] = detailed_player_stats
         
         json_string = json.dumps(enhanced_data, indent=4)
         
