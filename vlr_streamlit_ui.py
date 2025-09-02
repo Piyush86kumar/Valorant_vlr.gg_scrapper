@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import json
 from datetime import datetime
-import plotly.express as px
-import plotly.graph_objects as go
+
 import io
 import zipfile
 from scrapper.vlr_scraper_coordinator import VLRScraperCoordinator
