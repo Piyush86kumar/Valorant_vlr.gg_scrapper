@@ -6,8 +6,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import io
 import zipfile
-from vlr_scraper_coordinator import VLRScraperCoordinator
-from match_details_scrapper import MatchDetailsScraper
+from scrapper.vlr_scraper_coordinator import VLRScraperCoordinator
+from scrapper.match_details_scrapper import MatchDetailsScraper
 
 # Configure Streamlit page
 st.set_page_config(
@@ -125,7 +125,7 @@ def display_control_panel(url):
             max_detailed_matches = st.selectbox(
                 "Max matches to scrape:",
                 [3, 5, 10, 15, 20, "All"],
-                index=1,  # Default to 5
+                index=5,  # Default to All
                 help="Limit the number of matches to scrape. Applies to detailed matches, economy, and performance data. 'All' will scrape every match in the tournament (may take a long time)"
             )
 

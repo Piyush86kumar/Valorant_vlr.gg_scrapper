@@ -7,6 +7,8 @@ web scrapers that need to deal with dynamic content.
 
 import time
 import argparse
+import os
+import urllib.parse
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -68,9 +70,25 @@ if __name__ == "__main__":
         description="Fetch and save the full HTML structure of a web page using Selenium.",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("url", help="The full URL of the web page to capture.")
-    parser.add_argument("-o", "--output", default="page_snapshot.html", help="Name of the output HTML file. (default: page_snapshot.html)")
+    parser.add_argument("-o", "--output", default=None, help="Name of the output HTML file. (default: derived from URL)")
     parser.add_argument("-w", "--wait", type=int, default=5, help="Seconds to wait for the page's JavaScript to render. (default: 5)")
 
     args = parser.parse_args()
-    generate_html_snapshot(args.url, args.output, args.wait)
+
+    # Prompt the user for the URL
+    url_to_fetch = input("Please enter the URL to capture: ")
+
+    if url_to_fetch:
+        output_filename = args.output
+        if not output_filename:
+            # Generate filename from URL
+            path = urllib.parse.urlparse(url_to_fetch).path
+            # Remove leading/trailing slashes and take the last part
+            base_name = path.strip('/').split('/')[-1]
+            if not base_name: # Handle case where URL is just a domain
+                base_name = urllib.parse.urlparse(url_to_fetch).hostname.replace('.', '_')
+            output_filename = f"{base_name}.html"
+
+        generate_html_snapshot(url_to_fetch, output_filename, args.wait)
+    else:
+        print("No URL provided. Exiting.")

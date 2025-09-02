@@ -1,12 +1,12 @@
 import re
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Callable
-from matches_scraper import MatchesScraper
-from player_stats_scraper import PlayerStatsScraper
-from maps_agents_scraper import MapsAgentsScraper
-from detailed_match_performance_scrapper_v2 import DetailedMatchPerformanceScraper
-from detailed_match_economy_scrapper import DetailedMatchEconomyScraper
-from match_details_scrapper import MatchDetailsScraper
+from .matches_scraper import MatchesScraper
+from .player_stats_scraper import PlayerStatsScraper
+from .maps_agents_scraper import MapsAgentsScraper
+from .detailed_match_performance_scrapper_v2 import DetailedMatchPerformanceScraper
+from .detailed_match_economy_scrapper import DetailedMatchEconomyScraper
+from .match_details_scrapper import MatchDetailsScraper
 
 class VLRScraperCoordinator:
     """
