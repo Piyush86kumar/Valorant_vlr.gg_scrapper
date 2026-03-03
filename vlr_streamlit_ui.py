@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import json
 from datetime import datetime
-
 import io
 import zipfile
 from scrapper.vlr_scraper_coordinator import VLRScraperCoordinator

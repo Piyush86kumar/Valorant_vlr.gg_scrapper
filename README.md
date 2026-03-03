@@ -1,119 +1,141 @@
-# 🎮 VLR.gg Comprehensive Data Scraper
+# VLR.gg  Data Scraper 
 
-A modular web scraping solution for extracting comprehensive Valorant esports data from [VLR.gg](https://www.vlr.gg/). This project provides both programmatic access and a user-friendly web interface for collecting tournament data, player statistics, agent usage patterns, and detailed match analytics.
+A modular scraping system for VLR.gg tournament events with SQLite database integration.
 
-## 🚀 Features
+## 🚀 Quick Start
 
-### **Core Scraping Capabilities**
-- **🏆 Match Data**: Tournament brackets, match results, scores, schedules, and team performance metrics
-- **📊 Player Statistics**: Individual player rankings, performance metrics, and statistical analysis
-- **🎭 Maps & Agents**: Agent usage patterns, map pick rates, and composition strategies
-- **🔍 Detailed Match Analysis**: Round-by-round breakdowns with comprehensive metrics
-- **💰 Economy Tracking**: Financial performance analysis per round and match
-- **⚡ Performance Metrics**: Detailed player performance data and analytics
+1. **Install dependencies**:
+```bash
+pip install -r requirements.txt
+```
 
-### **Technical Features**
-- **🔄 Modular Architecture**: 7 specialized scrapers for different data types
-- **📈 Progress Tracking**: Real-time scraping progress with status updates
-- **💾 Multiple Export Formats**: CSV, JSON, and ZIP file support
-- **⚡ Performance Optimization**: Configurable scraping limits and batch processing
+2. **Run the application**:
+```bash
+streamlit run vlr_streamlit_ui.py
+```
+
+3. **Use the scraper**:
+   - Enter a VLR.gg event URL (e.g., `https://www.vlr.gg/event/2097/valorant-champions-2024`)
+   - Select what to scrape (Matches, Player Stats, Maps & Agents)
+   - Review the complete scraped data
+   - Save to database or download files
+
+## 📁 Project Structure
+
+```
+├── matches_scraper.py          # Scrapes match data and results
+├── player_stats_scraper.py     # Scrapes player statistics
+├── maps_agents_scraper.py      # Scrapes agent usage and map data
+├── vlr_scraper_coordinator.py  # Coordinates all scrapers
+├── vlr_database.py             # SQLite database operations
+├── vlr_streamlit_ui.py         # Streamlit web interface
+└── README.md                   # This file
+```
+
+## 🎯 Features
+
+### **Modular Scraping**
+- **🏆 Matches Scraper**: Match details, scores, team performance
+- **📊 Player Stats Scraper**: Individual player statistics and rankings
+- **🎭 Maps & Agents Scraper**: Agent usage, map picks, meta analysis
+
+### **Data Management**
+- **🗄️ SQLite Database**: Persistent storage for historical analysis
+- **📥 File Downloads**: JSON and CSV export options
+- **👁️ Data Preview**: Complete data review before saving
 
 ### **User Interface**
-- **🌐 Streamlit Web App**: Modern, responsive web interface
-- **🎨 Intuitive Controls**: Simple three-step process (Scrape → Review → Save)
-- **📊 Data Preview**: Interactive tables for data review before export
-- **⚙️ Customizable Options**: Selective data scraping with configurable limits
+- **Simple 3-step workflow**: Scrape → Review → Save
+- **Real-time progress**: Live scraping status updates
+- **Complete data display**: Full tables showing all scraped data
 
-## 🏗️ Project Architecture
+## 🔧 Usage Examples
 
-```
-Project Root/
-├── 📁 scrapper/                    # Core scraping modules
-│   ├── vlr_scraper_coordinator.py    # Main orchestrator
-│   ├── matches_scraper.py            # Match data extraction
-│   ├── player_stats_scraper.py       # Player statistics
-│   ├── maps_agents_scraper.py        # Agent and map data
-│   ├── match_details_scrapper.py     # Detailed match data for each individual match
-│   ├── detailed_match_economy_scrapper.py      # Economy data
-│   └── detailed_match_performance_scrapper_v2.py # Performance metrics
-├── vlr_streamlit_ui.py         # Web application interface
-├── 📁 html_structure/             # HTML snapshot script and samples
-├── 📁 sample_data/                # Example output files
-├── 📋 requirements.txt             # Python dependencies
-└── 📖 README.md                   # This documentation
+### **Using Individual Scrapers**
+```python
+from matches_scraper import MatchesScraper
+
+scraper = MatchesScraper()
+matches_data = scraper.scrape_matches("https://www.vlr.gg/event/2097/valorant-champions-2024")
+print(f"Found {matches_data['total_matches']} matches")
 ```
 
-## 🛠️ Installation & Setup
+### **Using the Coordinator**
+```python
+from vlr_scraper_coordinator import VLRScraperCoordinator
 
-### **Prerequisites**
-- Python 3.7 or higher
-- Chrome browser (for Selenium-based scrapers)
-- ChromeDriver (automatically managed by webdriver-manager)
+coordinator = VLRScraperCoordinator()
+data = coordinator.scrape_comprehensive(
+    "https://www.vlr.gg/event/2097/valorant-champions-2024",
+    scrape_matches=True,
+    scrape_stats=True,
+    scrape_maps_agents=True
+)
+```
 
-### **Quick Start**
+### **Using the Database**
+```python
+from vlr_database import VLRDatabase
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Piyush86kumar/Valorant_vlr.gg_scrapper.git
-   cd Valorant_vlr.gg_scrapper.git
-   ```
-3. **Create a virtual environment**
-    ```bash
-    conda create -p /desired/path/to/env python=3.12
-    conda activate /desired/path/to/env
-    ```
+db = VLRDatabase()
+event_id = db.save_comprehensive_data(scraped_data)
+events = db.get_events_list()
+```
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 📊 Data Structure
 
-3. **Launch the web interface**
-   ```bash
-   streamlit run vlr_streamlit_ui.py
-   ```
+### **Matches Data**
+- Team names and scores
+- Match status (Completed/Scheduled)
+- Stage and tournament information
+- Series details
 
-4. **Open your browser** and navigate to the displayed URL 
+### **Player Statistics**
+- Individual performance metrics (ACS, K/D, ADR, etc.)
+- Team affiliations
+- Rankings and comparisons
 
-## 📖 Usage Guide
+### **Maps & Agents Data**
+- Agent usage percentages
+- Win rates by agent
+- Map pick rates
+- Meta analysis with role categorization
 
-### **Web Interface (Recommended)**
+## 🛠️ Requirements
 
-1. **🔍 Enter Event URL**
-   - Paste a VLR.gg event URL (e.g., `https://www.vlr.gg/event/2097/valorant-champions-2024`)
-   - Click "Validate" to verify the URL
+- Python 3.7+
+- streamlit
+- requests
+- beautifulsoup4
+- pandas
+- plotly
 
-2. **⚙️ Configure Scraping Options**
-   - Select which data types to scrape
-   - Set limits for detailed match analysis (3, 5, 10, 15, 20, or All)
-   - Choose scraping depth based on your needs
+## 📝 Example URLs
 
-3. **🚀 Start Scraping**
-   - Click "Start Scraping" to begin data extraction
-   - Monitor progress with real-time status updates
-   - Wait for completion notification
+- **Valorant Champions 2024**: `https://www.vlr.gg/event/2097/valorant-champions-2024`
+- **Masters Madrid 2024**: `https://www.vlr.gg/event/1921/champions-tour-2024-masters-madrid`
+- **Masters Shanghai 2024**: `https://www.vlr.gg/event/1999/champions-tour-2024-masters-shanghai`
 
-4. **👁️ Review Data**
-   - Preview scraped data in interactive tables
-   - Verify data quality and completeness
-   - Check scraping summary statistics
+## 🎮 Workflow
 
-5. **💾 Export Data**
-   - Download a ZIP archive with all data with CSV files
-   - Export as a single JSON file
+1. **Step 1 - Scrape**: Enter URL and select data types to scrape
+2. **Step 2 - Review**: View complete scraped data in tables
+3. **Step 3 - Save**: Choose database storage or file download
 
-## 📄 License
+## 🔄 Database Features
 
-This project is for educational and research purposes only. Please be respectful of VLR.gg's terms of service and use this tool responsibly.
+- **Persistent Storage**: Save events for historical analysis
+- **Easy Retrieval**: Browse and view previously scraped events
+- **Export Options**: Export data to CSV files
+- **Data Management**: View, delete, and organize saved events
 
-## 🔗 Related Resources
+## 📈 Future Enhancements
 
-- [VLR.gg Official Site](https://www.vlr.gg/)
-- [Valorant Esports](https://playvalorant.com/en-us/esports/)
-- [Streamlit Documentation](https://docs.streamlit.io/)
-- [Beautiful Soup Documentation](https://www.crummy.com/software/BeautifulSoup/)
-- [Selenium Documentation](https://selenium-python.readthedocs.io/)
+- Support for additional VLR.gg data types
+- Advanced data visualization
+- Automated scheduling for regular scraping
+- API endpoint creation
 
 ---
 
-**Built with ❤️ for the Valorant esports community**
+**Note**: This tool is for educational and research purposes. Please respect VLR.gg's terms of service and use responsibly.
