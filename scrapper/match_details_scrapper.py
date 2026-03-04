@@ -14,7 +14,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 
 class MatchDetailsScraper:
     def __init__(self):
@@ -43,7 +42,7 @@ class MatchDetailsScraper:
 
         # Use webdriver-manager to auto-match ChromeDriver to installed Chrome/Chromium version
         try:
-            self.driver_service = ChromeService(ChromeDriverManager().install())
+            self.driver_service = ChromeService('/usr/bin/chromedriver')
         except Exception as e:
             print(f"Error initializing ChromeService via webdriver-manager: {e}")
             self.driver_service = None
