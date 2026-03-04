@@ -222,39 +222,38 @@ class MapsAgentsScraper:
                 # Extract total utilization (first row) and individual map utilizations
                 for row_idx, row in enumerate(data_rows):
                     cells = row.find_all('td')
-                    if len(cells) > (4 + i):  # Ensure we have the agent column
-                        agent_cell = cells[4 + i]
-                        color_sq = agent_cell.find('div', class_='color-sq')
-                        if color_sq:
-                            span = color_sq.find('span')
-                            if span:
-                                util_text = span.get_text(strip=True)
-                                try:
-                                    util_percent = float(util_text.replace('%', ''))
+                    if len(cells) <= (4 + i):
+                        continue
 
-                                    # Check if this is the total row (first row with class 'mod-all' or empty map name)
-                                    map_cell = cells[0]
-                                    map_text = map_cell.get_text(strip=True)
+                    agent_cell = cells[4 + i]
+                    util_text = agent_cell.get_text(strip=True)
 
-                                    if not map_text or 'mod-all' in row.get('class', []):
-                                        # This is the total utilization row
-                                        agent_data['total_utilization'] = util_percent
-                                    else:
-                                        # This is an individual map row
-                                        # Clean map name
-                                        if len(map_text) > 2 and map_text[1] == ' ':
-                                            map_name = map_text[2:]
-                                        elif len(map_text) > 1 and map_text[0] == map_text[1]:
-                                            # Handle cases like "IIcebox" -> "Icebox"
-                                            map_name = map_text[1:]
-                                        else:
-                                            map_name = map_text
+                    try:
+                        util_percent = float(util_text.replace('%', ''))
+                    except ValueError:
+                        continue
 
-                                        # Only add if map name is not empty
-                                        if map_name and map_name.strip():
-                                            agent_data['map_utilizations'][map_name] = util_percent
-                                except ValueError:
-                                    pass
+                    # Check if this is the total row (first row with class 'mod-all' or empty map name)
+                    map_cell = cells[0]
+                    map_text = map_cell.get_text(strip=True)
+
+                    if not map_text or 'mod-all' in row.get('class', []):
+                        # This is the total utilization row
+                        agent_data['total_utilization'] = util_percent
+                    else:
+                        # This is an individual map row
+                        # Clean map name
+                        if len(map_text) > 2 and map_text[1] == ' ':
+                            map_name = map_text[2:]
+                        elif len(map_text) > 1 and map_text[0] == map_text[1]:
+                            # Handle cases like "IIcebox" -> "Icebox"
+                            map_name = map_text[1:]
+                        else:
+                            map_name = map_text
+
+                        # Only add if map name is not empty
+                        if map_name and map_name.strip():
+                            agent_data['map_utilizations'][map_name] = util_percent
 
                 agents_data.append(agent_data)
 
