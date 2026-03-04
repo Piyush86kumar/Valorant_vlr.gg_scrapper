@@ -14,24 +14,39 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-# Optional: from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 class MatchDetailsScraper:
     def __init__(self):
         self.base_url = "https://www.vlr.gg"
         # Selenium setup
         self.chrome_options = ChromeOptions()
-        self.chrome_options.add_argument("--headless")
+
+        # Set Chromium binary path for Streamlit Cloud (installed via packages.txt)
+        import os
+        chromium_paths = [
+            "/usr/bin/chromium-browser",
+            "/usr/bin/chromium",
+            "/snap/bin/chromium",
+        ]
+        for path in chromium_paths:
+            if os.path.exists(path):
+                self.chrome_options.binary_location = path
+                break
+
+        self.chrome_options.add_argument("--headless=new")
         self.chrome_options.add_argument("--disable-gpu")
         self.chrome_options.add_argument("--no-sandbox")
+        self.chrome_options.add_argument("--disable-dev-shm-usage")
         self.chrome_options.add_argument("--window-size=1920,1080")
-        # Ensure chromedriver is in PATH or use webdriver_manager:
-        # self.driver_service = ChromeService(ChromeDriverManager().install())
+        self.chrome_options.add_argument("--blink-settings=imagesEnabled=false")
+
+        # Use webdriver-manager to auto-match ChromeDriver to installed Chrome/Chromium version
         try:
-            self.driver_service = ChromeService() # Assumes chromedriver is in PATH
+            self.driver_service = ChromeService(ChromeDriverManager().install())
         except Exception as e:
-            print(f"Error initializing ChromeService. Ensure ChromeDriver is in your PATH or installed via webdriver-manager: {e}")
-            self.driver_service = None # Allow script to run if only using pre-fetched HTML
+            print(f"Error initializing ChromeService via webdriver-manager: {e}")
+            self.driver_service = None
         self.driver = None
 
     def _init_driver(self):
@@ -484,22 +499,8 @@ def main():
 
     print(f"Attempting to scrape match details from: {match_url}")
 
-    # Option 1: Scrape from the live URL (using Selenium)
+    # Scrape from the live URL (using Selenium)
     match_data = scraper.get_match_details(match_url)
-
-    # Option 2: Load from pre-saved HTML file (for testing parsing logic without hitting network/Selenium)
-    # html_file_path = r"vlr_kru_vs_cloud9.html"
-    # print(f"Attempting to load HTML from: {html_file_path}")
-    # try:
-    #     with open(html_file_path, 'r', encoding='utf-8') as f:
-    #         html_content_for_test = f.read()
-    #     match_data = scraper.get_match_details(match_url, html_content=html_content_for_test)
-    # except FileNotFoundError:
-    #     print(f"Error: HTML file not found at {html_file_path}.")
-    #     match_data = {}
-    # except Exception as e:
-    #     print(f"Error loading HTML file: {e}")
-    #     match_data = {}
 
     if match_data:
         print("\n--- Scraped Match Data (JSON) ---")
