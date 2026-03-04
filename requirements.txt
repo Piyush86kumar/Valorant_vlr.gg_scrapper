@@ -1,6 +1,6 @@
-streamlit>=1.28.0
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-selenium>=4.15.0
-pandas>=2.0.0
+streamlit==1.50.0
+selenium==4.33.0
 webdriver-manager
+beautifulsoup4==4.13.4
+requests==2.32.3
+pandas==2.2.3
