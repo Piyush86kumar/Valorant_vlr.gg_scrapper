@@ -138,7 +138,7 @@ def display_control_panel(url):
         st.write("")  # Spacing
         scrape_clicked = st.button("🚀 Start Scraping", type="primary",
                                  disabled=not url or st.session_state.current_step == "scraping",
-                                 use_container_width=True)
+                                 width='stretch')
 
     # Clear data option (smaller)
     if st.session_state.scraped_data:
@@ -361,7 +361,7 @@ def display_simple_data_preview():
 
                 st.dataframe(
                     matches_df[available_columns],
-                    use_container_width=True,
+                    width='stretch',
                     hide_index=True
                 )
 
@@ -437,7 +437,7 @@ def display_simple_data_preview():
 
                     if all_overall_stats:
                         overall_df = pd.DataFrame(all_overall_stats)
-                        st.dataframe(overall_df, use_container_width=True, hide_index=True)
+                        st.dataframe(overall_df, width='stretch', hide_index=True)
 
                 # Show raw map-by-map stats
                 maps_data = match.get('maps', [])
@@ -481,7 +481,7 @@ def display_simple_data_preview():
 
                         if map_player_stats:
                             map_df = pd.DataFrame(map_player_stats)
-                            st.dataframe(map_df, use_container_width=True, hide_index=True)
+                            st.dataframe(map_df, width='stretch', hide_index=True)
 
     # Player stats data - show all
     stats_data = data.get('stats_data', {})
@@ -505,7 +505,7 @@ def display_simple_data_preview():
 
                 st.dataframe(
                     players_df[available_columns],
-                    use_container_width=True,
+                    width='stretch',
                     hide_index=True
                 )
 
@@ -559,9 +559,9 @@ def display_simple_data_preview():
                 final_df = pd.DataFrame(vlr_table_data)
                 cols_ordered = ['Agent', 'Total Utilization (%)'] + sorted(list(all_map_columns))
                 final_df = final_df.reindex(columns=cols_ordered).fillna(0)
-                st.dataframe(final_df, use_container_width=True, hide_index=True)
+                st.dataframe(final_df, width='stretch', hide_index=True)
             else:
-                st.dataframe(pd.DataFrame(agents), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(agents), width='stretch', hide_index=True)
 
     if maps:
         st.subheader("🗺️ Map Statistics")
@@ -570,7 +570,7 @@ def display_simple_data_preview():
             st.write(f"**Total maps found:** {len(maps)}")
 
             maps_df = pd.DataFrame(maps)
-            st.dataframe(maps_df, use_container_width=True, hide_index=True)
+            st.dataframe(maps_df, width='stretch', hide_index=True)
             
     # Economy data
     economy_data = data.get('economy_data', [])
@@ -604,7 +604,7 @@ def display_simple_data_preview():
                         'Semi-buy (won)': 'Semi-buy: 10-20k',
                         'Full buy(won)': 'Full buy: 20k+'
                     })
-                    st.dataframe(economy_df, use_container_width=True, hide_index=True)
+                    st.dataframe(economy_df, width='stretch', hide_index=True)
 
     # Performance data
     performance_data_container = data.get('performance_data', {})
@@ -669,7 +669,7 @@ def display_simple_data_preview():
                 # Display the dataframe with better formatting
                 st.dataframe(
                     performance_df,
-                    use_container_width=True,
+                    width='stretch',
                     hide_index=True,
                     column_config={
                         "Match ID": st.column_config.TextColumn("Match ID", width="small"),
@@ -947,7 +947,7 @@ def display_save_options():
             data=zip_buffer,
             file_name=f"{safe_event_title}_csvs.zip",
             mime="application/zip",
-            use_container_width=True,
+            width='stretch',
             type="primary"
         )
 
@@ -1063,7 +1063,7 @@ def display_save_options():
             data=json_string,
             file_name=f"{safe_event_title}.json",
             mime="application/json",
-            use_container_width=True
+            width='stretch'
         )
 
 def main():
