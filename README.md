@@ -2,6 +2,9 @@
 
 A modular, end-to-end scraping system for VLR.gg tournament events — extracting match results, player statistics, economy data, performance data, and detailed per-map player stats, with CSV and JSON export support.
 
+## Demo
+🚀 Live Demo: View the interactive vlr scraper on [Streamlit Cloud](https://valorant-vlr-gg-scrapper-app.streamlit.app/)
+
 ## Process Flow
 <p align="center">
     <img src = "assets/process_flow.png" alt ="Process Flow" width="500" />
