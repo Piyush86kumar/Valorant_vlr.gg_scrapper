@@ -7,7 +7,7 @@ A modular, end-to-end scraping system for VLR.gg tournament events — extractin
 
 ## Process Flow
 <p align="center">
-    <img src = "assets/process_flow.png" alt ="Process Flow" width="900" />
+    <img src = "assets/process_flow1.png" alt ="Process Flow" width="550" />
 </p>
 
 ## 🚀 Quick Start
