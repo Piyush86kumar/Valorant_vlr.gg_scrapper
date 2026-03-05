@@ -40,7 +40,6 @@ streamlit run streamlit_app.py
 c:\My Code\Val_Analysis\Project 5\
 ├───.gitignore
 ├───packages.txt
-├───README (1).md
 ├───README.md
 ├───requirements.txt
 ├───streamlit_app.py
